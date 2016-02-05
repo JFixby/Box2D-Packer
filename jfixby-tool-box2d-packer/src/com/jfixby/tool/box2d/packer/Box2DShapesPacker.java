@@ -2,7 +2,6 @@ package com.jfixby.tool.box2d.packer;
 
 import java.io.IOException;
 
-import org.box2d.r3.gdx.beditor.Box2DEditorProject;
 import org.box2d.r3.gdx.beditor.Box2DEditorShape;
 
 import com.jfixby.cmns.api.assets.AssetID;
@@ -15,6 +14,7 @@ import com.jfixby.cmns.api.log.L;
 import com.jfixby.cmns.api.sys.Sys;
 import com.jfixby.r3.api.resources.StandardPackageFormats;
 import com.jfixby.rana.api.pkg.fs.PackageDescriptor;
+import com.jfixby.redtriplane.fokker.assets.Box2DEditorProject;
 
 public class Box2DShapesPacker {
 
