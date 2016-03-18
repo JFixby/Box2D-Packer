@@ -18,67 +18,61 @@ import com.jfixby.redtriplane.fokker.assets.Box2DEditorProject;
 
 public class Box2DShapesPacker {
 
-	public static Box2DShapesPackerSettings newSettings() {
-		return new Box2DShapesPackerSettings();
+    public static Box2DShapesPackerSettings newSettings() {
+	return new Box2DShapesPackerSettings();
+    }
+
+    public static void pack(Box2DShapesPackerSettings settings) throws IOException {
+
+	File input_file = settings.getInputFile();
+	L.d("Reading", input_file);
+
+	Box2DEditorProject project = Box2DEditorProject.loadProject(input_file);
+
+	List<AssetID> provisions = Collections.newList();
+	for (int i = 0; i < project.size(); i++) {
+	    Box2DEditorShape shape = project.getShape(i);
+	    AssetID asset_id = (shape.getID());
+	    L.d("    ", asset_id);
+	    provisions.add(asset_id);
 	}
 
-	public static void pack(Box2DShapesPackerSettings settings)
-			throws IOException {
+	File output_folder = settings.getOutputFolder();
 
-		File input_file = settings.getInputFile();
-		L.d("Reading", input_file);
+	File package_folder = output_folder.child(settings.getPackageName().toString());
 
-		Box2DEditorProject project = Box2DEditorProject.loadProject(input_file);
+	package_folder.makeFolder();
+	File content = package_folder.child(PackageDescriptor.PACKAGE_CONTENT_FOLDER);
+	content.makeFolder();
 
-		List<AssetID> provisions = Collections.newList();
-		for (int i = 0; i < project.size(); i++) {
-			Box2DEditorShape shape = project.getShape(i);
-			AssetID asset_id = (shape.getID());
-			L.d("    ", asset_id);
-			provisions.add(asset_id);
-		}
+	content.getFileSystem().copyFileToFolder(input_file, content);
 
-		File output_folder = settings.getOutputFolder();
+	L.d("writing", package_folder);
 
-		File package_folder = output_folder.child(settings.getPackageName()
-				.toString());
+	producePackageDescriptor(package_folder, StandardPackageFormats.Box2DEditor.Project, "1.0", provisions,
+		Collections.newList(), input_file.getName());
 
-		package_folder.makeFolder();
-		File content = package_folder
-				.child(PackageDescriptor.PACKAGE_CONTENT_FOLDER);
-		content.makeFolder();
+    }
 
-		content.getFileSystem().copyFileToFolder(input_file, content);
+    static private void producePackageDescriptor(File output_folder, String format, String version,
+	    Collection<AssetID> provisions, Collection<AssetID> dependencies, String root_file_name)
+	    throws IOException {
 
-		L.d("writing", package_folder);
-
-		producePackageDescriptor(package_folder,
-				StandardPackageFormats.Box2DEditor.Project, "1.0", provisions,
-				Collections.newList(), input_file.getName());
-
+	PackageDescriptor descriptor = new PackageDescriptor();
+	descriptor.format = format;
+	descriptor.timestamp = "" + Sys.SystemTime().currentTimeMillis();
+	descriptor.version = version;
+	for (AssetID d : provisions) {
+	    descriptor.packed_assets.addElement(d.toString());
+	}
+	for (AssetID d : dependencies) {
+	    descriptor.package_dependencies.addElement(d.toString());
 	}
 
-	static private void producePackageDescriptor(File output_folder,
-			String format, String version, Collection<AssetID> provisions,
-			Collection<AssetID> dependencies, String root_file_name)
-			throws IOException {
+	descriptor.root_file_name = root_file_name;
+	File output_file = output_folder.child(PackageDescriptor.PACKAGE_DESCRIPTOR_FILE_NAME);
 
-		PackageDescriptor descriptor = new PackageDescriptor();
-		descriptor.format = format;
-		descriptor.timestamp = ""+Sys.SystemTime().currentTimeMillis();
-		descriptor.version = version;
-		for (AssetID d : provisions) {
-			descriptor.packed_assets.addElement(d.toString());
-		}
-		for (AssetID d : dependencies) {
-			descriptor.package_dependencies.addElement(d.toString());
-		}
+	output_file.writeString(Json.serializeToString(descriptor));
 
-		descriptor.root_file_name = root_file_name;
-		File output_file = output_folder
-				.child(PackageDescriptor.PACKAGE_DESCRIPTOR_FILE_NAME);
-
-		output_file.writeString(Json.serializeToString(descriptor));
-
-	}
+    }
 }
