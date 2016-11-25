@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import org.box2d.r3.gdx.beditor.Box2DEditorShape;
 
-import com.jfixby.cmns.api.assets.AssetID;
+import com.jfixby.cmns.api.assets.ID;
 import com.jfixby.cmns.api.collections.Collections;
 import com.jfixby.cmns.api.collections.List;
 import com.jfixby.cmns.api.file.File;
@@ -27,10 +27,10 @@ public class Box2DShapesPacker {
 
 	Box2DEditorProject project = Box2DEditorProject.loadProject(input_file);
 
-	List<AssetID> provisions = Collections.newList();
+	List<ID> provisions = Collections.newList();
 	for (int i = 0; i < project.size(); i++) {
 	    Box2DEditorShape shape = project.getShape(i);
-	    AssetID asset_id = (shape.getID());
+	    ID asset_id = (shape.getID());
 	    L.d("    ", asset_id);
 	    provisions.add(asset_id);
 	}

@@ -1,13 +1,13 @@
 package com.jfixby.tool.box2d.packer;
 
-import com.jfixby.cmns.api.assets.AssetID;
+import com.jfixby.cmns.api.assets.ID;
 import com.jfixby.cmns.api.file.File;
 
 public class Box2DShapesPackerSettings {
 
 	private File i_file;
 	private File output_folder;
-	private AssetID package_name;
+	private ID package_name;
 
 	public void setInputFile(File i_file) {
 		this.i_file = i_file;
@@ -21,11 +21,11 @@ public class Box2DShapesPackerSettings {
 		return this.output_folder;
 	}
 
-	public void setPackageName(AssetID package_name) {
+	public void setPackageName(ID package_name) {
 		this.package_name = package_name;
 	}
 
-	public AssetID getPackageName() {
+	public ID getPackageName() {
 		return this.package_name;
 	}
 
